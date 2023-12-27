@@ -1,6 +1,7 @@
 package com.example.cosumerestapi.ui.halaman
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -14,6 +15,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -21,6 +23,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -43,13 +46,24 @@ import com.example.cosumerestapi.ui.view_model.KontakUIState
 
 @Composable
 fun HomeStatus(
-    kontakUIState: KontakUIState, retryAction: () -> Unit, modifier: Modifier = Modifier
+    kontakUIState: KontakUIState,
+    retryAction: () -> Unit,
+    modifier: Modifier = Modifier,
+    onDetailClick: (Int) -> Unit,
+    onDeleteClick: (Kontak) -> Unit = {}
 ) {
 
     when (kontakUIState) {
         is KontakUIState.Loading -> OnLoading(modifier = modifier.fillMaxSize())
         is KontakUIState.Success -> KontakLayout(
-            kontak = kontakUIState.kontak, modifier = modifier.fillMaxWidth()
+            kontak = kontakUIState.kontak,
+            modifier = modifier.fillMaxWidth(),
+            onDetailClick ={
+                onDetailClick(it.id)
+            },
+            onDeleteClick = {
+                onDeleteClick(it)
+            }
         )
 
         is KontakUIState.Error -> OnError(retryAction, modifier = modifier.fillMaxSize())
@@ -90,14 +104,27 @@ fun OnError(retryAction: () -> Unit, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun KontakLayout(kontak: List<Kontak>, modifier: Modifier = Modifier) {
+fun KontakLayout(
+    kontak: List<Kontak>,
+    modifier: Modifier = Modifier,
+    onDetailClick: (Kontak) -> Unit,
+    onDeleteClick: (Kontak) -> Unit = {}
+) {
     LazyColumn(
         modifier = modifier,
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         items(kontak) { kontak ->
-            KontakCard(kontak = kontak, modifier = Modifier.fillMaxWidth())
+            KontakCard(
+                kontak = kontak,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onDetailClick(kontak) },
+                onDeleteClick = {
+                    onDeleteClick(kontak)
+                }
+            )
         }
     }
 
@@ -105,7 +132,8 @@ fun KontakLayout(kontak: List<Kontak>, modifier: Modifier = Modifier) {
 @Composable
 fun KontakCard(
     kontak: Kontak,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onDeleteClick: (Kontak) -> Unit = {}
 ) {
     Card(
         modifier = modifier,
@@ -133,10 +161,23 @@ fun KontakCard(
                     style = MaterialTheme.typography.titleMedium
                 )
             }
-            Text(
-                text = kontak.email,
-                style = MaterialTheme.typography.titleMedium
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = kontak.email,
+                    style = MaterialTheme.typography.titleMedium
+                )
+                Spacer(Modifier.weight(1f))
+                IconButton(onClick = {onDeleteClick(kontak)}) {
+                    Icon(
+                        imageVector = Icons.Default.Delete ,
+                        contentDescription = null
+                    )
+                }
+            }
+
         }
 
     }
