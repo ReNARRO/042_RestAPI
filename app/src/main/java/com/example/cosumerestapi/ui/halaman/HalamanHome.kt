@@ -38,11 +38,61 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.cosumerestapi.R
 import com.example.cosumerestapi.modeldata.Kontak
+import com.example.cosumerestapi.navigasi.DestinasiNavigasi
 import com.example.cosumerestapi.ui.PenyediaViewModel
+import com.example.cosumerestapi.ui.TopAppBarKontak
 import com.example.cosumerestapi.ui.view_model.HomeViewModel
 import com.example.cosumerestapi.ui.view_model.KontakUIState
+object DestinasiHome: DestinasiNavigasi{
+    override val route = "home"
+    override val titleRes = "Kontak"
+}
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun HomeScreen(
+    navigasitoItemEntry: () -> Unit,
+    modifier: Modifier = Modifier,
+    onDetailClick: (Int) -> Unit,
+    viewModel: HomeViewModel = viewModel(factory = PenyediaViewModel.Factory)
+){
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
+    Scaffold(
+        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        topBar = {
+            TopAppBarKontak(
+                title = DestinasiHome.titleRes,
+                canNavigateBack = false,
+                scrollBehavior = scrollBehavior
+            )
+        },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = navigasitoItemEntry,
+                shape = MaterialTheme.shapes.medium,
+                modifier = Modifier.padding(18.dp)
+                ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "Add Kontak")
+            }
+        }
+    ) { innerPadding ->
+        HomeStatus(
+            kontakUIState = viewModel.kontakUIState,
+            retryAction = {
+                          viewModel.getKontak()
+            },
+            modifier = Modifier.padding(innerPadding),
+            onDetailClick = onDetailClick,
+            onDeleteClick = {
+                viewModel.deleteKontak(it.id)
+                viewModel.getKontak()
+            }
+        )
 
+    }
+}
 
 @Composable
 fun HomeStatus(
