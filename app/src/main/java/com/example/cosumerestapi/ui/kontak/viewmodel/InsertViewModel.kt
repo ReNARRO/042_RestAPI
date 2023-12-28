@@ -1,4 +1,4 @@
-package com.example.cosumerestapi.ui.view_model
+package com.example.cosumerestapi.ui.kontak.viewmodel
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf

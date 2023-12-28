@@ -36,10 +36,6 @@ fun KontakApp(
                 .padding(it)
         ) {
 
-            HomeStatus(
-                kontakUIState = homeViewModel.kontakUIState,
-                retryAction = homeViewModel::getKontak
-            )
         }
     }
 }

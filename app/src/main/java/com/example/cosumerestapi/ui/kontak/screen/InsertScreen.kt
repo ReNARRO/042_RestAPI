@@ -1,4 +1,4 @@
-package com.example.cosumerestapi.ui.halaman
+package com.example.cosumerestapi.ui.kontak.screen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,7 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.example.cosumerestapi.ui.view_model.InsertUiEvent
+import com.example.cosumerestapi.ui.kontak.viewmodel.InsertUiEvent
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
